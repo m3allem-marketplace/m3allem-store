@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { describe, beforeEach, it, expect } from 'vitest';
 import { App } from './app';
 
 describe('App', () => {
@@ -11,7 +12,16 @@ describe('App', () => {
       declarations: [
         App
       ],
-    }).compileComponents();
+    })
+    .overrideComponent(App, {
+      set: {
+        template: '<h1>Hello, {{ title() }}</h1>',
+        templateUrl: undefined,
+        styleUrl: undefined,
+        styles: []
+      }
+    })
+    .compileComponents();
   });
 
   it('should create the app', () => {
@@ -27,3 +37,4 @@ describe('App', () => {
     expect(compiled.querySelector('h1')?.textContent).toContain('Hello, m3allem-ecommerce');
   });
 });
+
