@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -10,23 +10,19 @@ import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  private readonly authService = inject(AuthService);
+  constructor(private authService: AuthService) {}
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    const token = this.authService.getJwtToken();
-    const isApiRequest = request.url.startsWith('/api') || request.url.includes('/auth') || request.url.includes('/projects') || request.url.includes('/bookings');
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = this.authService.getToken();
 
-    if (token && isApiRequest) {
-      request = request.clone({
+    if (token) {
+      req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
         }
       });
     }
 
-    return next.handle(request);
+    return next.handle(req);
   }
 }
