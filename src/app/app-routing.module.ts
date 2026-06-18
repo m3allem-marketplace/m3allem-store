@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 import { SupplierGuard } from './core/guards/supplier.guard';
 
 const routes: Routes = [
+  { path: 'auth/login', children: [] },
+  { path: 'ecommerce/storefront', children: [] },
   {
     path: 'ecommerce',
     loadChildren: () => import('./features/ecommerce/ecommerce.module').then(m => m.EcommerceModule)
   },
   {
     path: 'supplier-dashboard',
-    canActivate: [SupplierGuard],
+    canActivate: [AuthGuard, SupplierGuard],
     loadChildren: () => import('./features/supplier-dashboard/supplier-dashboard.module').then(m => m.SupplierDashboardModule)
   },
   {

@@ -56,6 +56,7 @@ export class AuthService {
     return this.currentUser$.value?.role === role;
   }
 
+
   private restoreSession(): void {
     const token = this.getToken();
     if (!token) return;
