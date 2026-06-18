@@ -4,8 +4,6 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { SupplierGuard } from './core/guards/supplier.guard';
 
 const routes: Routes = [
-  { path: 'auth/login', children: [] },
-  { path: 'ecommerce/storefront', children: [] },
   {
     path: 'ecommerce',
     loadChildren: () => import('./features/ecommerce/ecommerce.module').then(m => m.EcommerceModule)
@@ -17,17 +15,12 @@ const routes: Routes = [
   },
   {
     path: 'worker-portal',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./features/worker-portal/worker-portal.module').then(m => m.WorkerPortalModule)
   },
-  {
-    path: '',
-    redirectTo: 'ecommerce',
-    pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: 'ecommerce'
-  }
+  { path: 'auth', children: [] },
+  { path: '', redirectTo: 'ecommerce', pathMatch: 'full' },
+  { path: '**', redirectTo: 'ecommerce' }
 ];
 
 @NgModule({
