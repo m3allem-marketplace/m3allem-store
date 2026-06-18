@@ -1,0 +1,99 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.floating-label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: #6c757d;
+  font-size: 1rem;
+  transition: all 0.2s ease-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.app-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: transparent;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+/* Floating label states */
+.input-container.is-focused .floating-label,
+.input-container.has-value .floating-label {
+  top: 0;
+  left: 8px;
+  font-size: 0.75rem;
+  background-color: #fff;
+  padding: 0 4px;
+  color: var(--brand-primary, #007bff);
+}
+
+.input-container.has-value:not(.is-focused) .floating-label {
+  color: #6c757d;
+}
+
+/* Focus state */
+.input-container.is-focused .app-input {
+  border-color: var(--brand-primary, #007bff);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Error state */
+.input-container.is-invalid .app-input {
+  border-color: #dc3545;
+  border-bottom: 2px solid #dc3545;
+}
+
+.input-container.is-invalid.is-focused .app-input {
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+.input-container.is-invalid .floating-label {
+  color: #dc3545;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Valid state */
+.icon-valid {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #28a745;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.input-container.is-valid .app-input {
+  border-color: #28a745;
+  padding-right: 36px;
+}
+
+.input-container.is-valid.is-focused .app-input {
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+}
