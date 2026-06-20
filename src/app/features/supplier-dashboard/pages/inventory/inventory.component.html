@@ -1,0 +1,71 @@
+<div class="inventory-container">
+  <div class="inventory-card">
+    <div class="inventory-header">
+      <h2>Inventory</h2>
+      <app-button label="Add Product" routerLink="../submit-item"></app-button>
+    </div>
+
+    <div class="spinner-container" *ngIf="isLoading">
+      <app-spinner></app-spinner>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && items.length === 0">
+      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+      <h3>No products yet. Add your first item!</h3>
+      <app-button label="Add Product" routerLink="../submit-item"></app-button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="inventory-table" *ngIf="!isLoading && items.length > 0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock Quantity</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items">
+            <ng-container *ngIf="editingItemId !== item._id">
+              <td>{{ item.title }}</td>
+              <td>{{ item.category }}</td>
+              <td>{{ item.price | currency }}</td>
+              <td>{{ item.stockQuantity }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="item.status">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <div class="actions-group">
+                  <button (click)="startEdit(item)" class="btn-action edit">Edit</button>
+                  <button (click)="deleteItem(item)" class="btn-action delete">Delete</button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container *ngIf="editingItemId === item._id">
+              <td><app-input [(ngModel)]="editForm.title" placeholder="Title"></app-input></td>
+              <td><app-input [(ngModel)]="editForm.category" placeholder="Category"></app-input></td>
+              <td><app-input type="number" [(ngModel)]="editForm.price" placeholder="Price"></app-input></td>
+              <td><app-input type="number" [(ngModel)]="editForm.stockQuantity" placeholder="Stock"></app-input></td>
+              <td><app-input [(ngModel)]="editForm.status" placeholder="Status"></app-input></td>
+              <td class="actions-cell">
+                <div class="actions-group">
+                  <button (click)="saveEdit()" class="btn-action save">Save</button>
+                  <button (click)="cancelEdit()" class="btn-action cancel">Cancel</button>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
