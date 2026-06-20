@@ -1,0 +1,14 @@
+<button
+  class="app-button"
+  [class]="'app-button btn-' + variant"
+  [class.is-loading]="isLoading"
+  [type]="type"
+  [disabled]="disabled || isLoading"
+  (click)="onClick()"
+  [attr.aria-busy]="isLoading || null"
+  [attr.aria-disabled]="(disabled || isLoading) || null"
+>
+  <span class="btn-spinner" *ngIf="isLoading" aria-hidden="true"></span>
+  <span class="btn-label" [class.hidden]="isLoading">{{ label }}</span>
+  <span class="btn-loading-label" *ngIf="isLoading">Loading…</span>
+</button>
