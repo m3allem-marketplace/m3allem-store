@@ -1,0 +1,100 @@
+<!-- Backdrop -->
+<div
+  class="backdrop"
+  [class.backdrop--visible]="isOpen"
+  (click)="close()"
+  aria-hidden="true"
+></div>
+
+<!-- Drawer -->
+<div class="drawer" [class.drawer--open]="isOpen" role="dialog" aria-label="سلة التسوق">
+
+  <!-- Header -->
+  <div class="drawer-header">
+    <h2 class="drawer-title">سلة التسوق</h2>
+    <button class="close-btn" (click)="close()" aria-label="إغلاق السلة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <ng-container *ngIf="cart$ | async as items">
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="items.length === 0">
+      <div class="empty-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </div>
+      <p class="empty-title">سلتك فارغة</p>
+      <p class="empty-sub">أضف منتجات لتبدأ التسوق</p>
+      <button class="browse-btn" (click)="browseProducts()">تصفح المنتجات</button>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="items-list" *ngIf="items.length > 0">
+      <div class="cart-item" *ngFor="let ci of items; let odd = odd" [class.cart-item--alt]="odd">
+
+        <!-- Thumbnail / Placeholder -->
+        <div class="item-thumb">
+          <img *ngIf="ci.item.imageUrl" [src]="ci.item.imageUrl" [alt]="ci.item.title" />
+          <div *ngIf="!ci.item.imageUrl" class="thumb-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="item-details">
+          <p class="item-title">{{ ci.item.title }}</p>
+          <p class="item-unit-price">{{ ci.item.price | number:'1.2-2' }} ج.م / قطعة</p>
+
+          <!-- Qty Controls -->
+          <div class="qty-row">
+            <button class="qty-btn" (click)="decrement(ci)" [disabled]="ci.quantity <= 1">−</button>
+            <span class="qty-value">{{ ci.quantity }}</span>
+            <button class="qty-btn" (click)="increment(ci)">+</button>
+          </div>
+        </div>
+
+        <!-- Line Total + Remove -->
+        <div class="item-right">
+          <p class="item-total">{{ (ci.item.price * ci.quantity) | number:'1.2-2' }} ج.م</p>
+          <button class="remove-btn" (click)="remove(ci)" aria-label="إزالة المنتج">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+              <path d="M10 11v6M14 11v6"></path>
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="drawer-footer" *ngIf="items.length > 0">
+      <div class="total-row">
+        <span class="total-label">الإجمالي</span>
+        <span class="total-value">{{ getTotal(items) | number:'1.2-2' }} ج.م</span>
+      </div>
+      <app-button
+        label="متابعة الدفع"
+        variant="primary"
+        (clicked)="onCheckout()"
+      ></app-button>
+    </div>
+
+  </ng-container>
+
+</div>

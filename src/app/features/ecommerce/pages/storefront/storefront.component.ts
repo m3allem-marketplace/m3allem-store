@@ -16,9 +16,10 @@ export class StorefrontComponent implements OnInit {
   allProducts: Item[] = [];
   filteredProducts: Item[] = [];
   isLoading = false;
+  isCartOpen = false;
 
   searchControl = new FormControl('');
-  
+
   categories = ['الكل', 'أدوات', 'معدات', 'قطع غيار', 'عُدد'];
   selectedCategory = 'الكل';
 
@@ -72,8 +73,7 @@ export class StorefrontComponent implements OnInit {
 
   applyFilters(): void {
     const searchTerm = (this.searchControl.value || '').trim().toLowerCase();
-    const activeCategoryArabic = this.selectedCategory;
-    const activeCategoryEnglish = this.categoryMapping[activeCategoryArabic] || 'All';
+    const activeCategoryEnglish = this.categoryMapping[this.selectedCategory] || 'All';
 
     this.filteredProducts = this.allProducts.filter(product => {
       const matchesSearch = !searchTerm ||
@@ -90,31 +90,42 @@ export class StorefrontComponent implements OnInit {
     event.stopPropagation();
     if (item.stockQuantity > 0) {
       this.ecommerceService.addToCart(item);
+      this.openCart();
     }
   }
+
 
   goToDetail(id: string): void {
     this.router.navigate(['/ecommerce/item-detail', id]);
   }
 
+  // ── Cart Drawer ───────────────────────────────────────────────────────────────
+
+  openCart(): void {
+    this.isCartOpen = true;
+  }
+
+  closeCart(): void {
+    this.isCartOpen = false;
+  }
+
+  goToCheckout(): void {
+    this.isCartOpen = false;
+    this.router.navigate(['/ecommerce/checkout']);
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────────
+
   getStockBadgeText(quantity: number): string {
-    if (quantity === 0) {
-      return 'نفد من المخزن';
-    } else if (quantity < 5) {
-      return `كمية محدودة (متبقي ${quantity})`;
-    } else {
-      return 'متوفر';
-    }
+    if (quantity === 0) return 'نفد من المخزن';
+    if (quantity < 5)   return `كمية محدودة (متبقي ${quantity})`;
+    return 'متوفر';
   }
 
   getStockBadgeClass(quantity: number): string {
-    if (quantity === 0) {
-      return 'badge-out-of-stock';
-    } else if (quantity < 5) {
-      return 'badge-low-stock';
-    } else {
-      return 'badge-in-stock';
-    }
+    if (quantity === 0) return 'badge-out-of-stock';
+    if (quantity < 5)   return 'badge-low-stock';
+    return 'badge-in-stock';
   }
 
   getCategoryArabic(category: string): string {
