@@ -1,0 +1,231 @@
+.submit-container {
+  padding: 40px 24px;
+  background-color: #F8FAFC;
+  min-height: 100vh;
+}
+
+.submit-card {
+  background-color: #FFFFFF;
+  border: none;
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.submit-header {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.submit-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 64px;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  color: #991B1B;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.05);
+}
+
+.error-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Remove default margin from app-input so grid gap handles spacing */
+.form-field ::ng-deep .input-container {
+  margin-bottom: 0 !important;
+}
+
+/* Standardize all inputs and selects to perfectly center placeholders */
+.form-field ::ng-deep .app-input,
+.app-select {
+  height: 48px;
+  line-height: normal;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Specific centering fix for floating labels inside custom height */
+.form-field ::ng-deep .floating-label {
+  top: 24px;
+  left: 16px;
+}
+.form-field ::ng-deep .input-container.is-focused .floating-label,
+.form-field ::ng-deep .input-container.has-value .floating-label {
+  top: 0;
+  left: 12px;
+}
+
+.form-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.flex-item {
+  flex: 1;
+  width: 100%;
+}
+
+/* Fix Status Label to exactly mimic the <app-input> focused floating label */
+.select-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  margin-top: 0;
+}
+
+.select-label {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background-color: #FFFFFF;
+  padding: 0 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4F46E5;
+  z-index: 10;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.app-select {
+  width: 100%;
+  height: 48px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid #CBD5E1;
+  background-color: transparent;
+  color: #0F172A;
+  outline: none;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+.app-select:hover {
+  background-color: #FFFFFF;
+}
+
+.app-select:focus {
+  border-color: #4F46E5;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.app-select option {
+  padding: 12px;
+  font-size: 15px;
+  background-color: #FFFFFF;
+}
+
+.app-select option[value="active"] {
+  color: #059669;
+  font-weight: 500;
+}
+
+.app-select option[value="out-of-stock"] {
+  color: #DC2626;
+  font-weight: 500;
+}
+
+.app-select option[value="draft"] {
+  color: #64748B;
+  font-weight: 500;
+}
+
+.select-container.is-invalid .app-select {
+  border-color: #EF4444;
+}
+
+.error-message {
+  color: #EF4444;
+  font-size: 0.875rem;
+  margin-top: 6px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* Modernize the buttons via ng-deep if necessary, or let app-button handle it */
+.form-actions ::ng-deep .btn-primary {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.form-actions ::ng-deep .btn-secondary {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .submit-container {
+    padding: 16px;
+  }
+  .submit-card {
+    padding: 24px;
+    border-radius: 12px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .flex-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+}

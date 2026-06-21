@@ -1,0 +1,111 @@
+<div class="submit-container">
+  <div class="submit-card">
+    <div class="submit-header">
+      <h2>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h2>
+    </div>
+
+    <div class="spinner-container" *ngIf="isLoadingItem">
+      <app-spinner></app-spinner>
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="error-icon">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" *ngIf="!isLoadingItem">
+      <div class="form-grid">
+        <div class="form-field">
+          <app-input
+            formControlName="title"
+            label="Title"
+            placeholder="Enter product title"
+            [errorMessage]="getErrorMessage('title')">
+          </app-input>
+        </div>
+
+        <div class="form-field">
+          <app-input
+            formControlName="category"
+            label="Category"
+            placeholder="Enter category"
+            [errorMessage]="getErrorMessage('category')">
+          </app-input>
+        </div>
+
+        <div class="form-field">
+          <app-input
+            formControlName="price"
+            label="Price"
+            type="number"
+            placeholder="0.00"
+            [errorMessage]="getErrorMessage('price')">
+          </app-input>
+        </div>
+
+        <div class="form-field">
+          <app-input
+            formControlName="stockQuantity"
+            label="Stock Quantity"
+            type="number"
+            placeholder="0"
+            [errorMessage]="getErrorMessage('stockQuantity')">
+          </app-input>
+        </div>
+
+        <div class="form-field full-width">
+          <app-input
+            formControlName="description"
+            label="Description"
+            placeholder="Enter product description"
+            [errorMessage]="getErrorMessage('description')">
+          </app-input>
+        </div>
+
+        <div class="form-field full-width flex-row">
+          <div class="flex-item">
+            <app-input
+              formControlName="imageUrl"
+              label="Image URL"
+              placeholder="https://example.com/image.jpg"
+              [errorMessage]="getErrorMessage('imageUrl')">
+            </app-input>
+          </div>
+
+          <div class="flex-item select-flex-item">
+            <div class="select-container" [class.is-invalid]="itemForm.get('status')?.invalid && itemForm.get('status')?.touched">
+              <label class="select-label">Status</label>
+              <select formControlName="status" class="app-select">
+                <option value="active">Active</option>
+                <option value="out-of-stock">Out of Stock</option>
+                <option value="draft">Draft</option>
+              </select>
+              <div class="error-message" *ngIf="itemForm.get('status')?.invalid && itemForm.get('status')?.touched">
+                This field is required.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <app-button
+          label="Cancel"
+          variant="secondary"
+          type="button"
+          routerLink="../inventory">
+        </app-button>
+        <app-button
+          [label]="isEditMode ? 'Update Product' : 'Create Product'"
+          type="submit"
+          variant="primary"
+          [isLoading]="isSubmitting"
+          [disabled]="isSubmitting">
+        </app-button>
+      </div>
+    </form>
+  </div>
+</div>
