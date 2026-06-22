@@ -30,16 +30,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
   ) {}
 
 ngOnInit(): void {
-  this.cartSub = this.ecommerceService.cart$.subscribe(items => {
-    this.cartItems = items;
-  });
-
-  const items = this.ecommerceService.getCartItemsSnapshot();
-
-  if (items.length === 0) {
-    this.router.navigate(['/ecommerce/storefront']);
-    return;
-  }
 
   this.checkoutForm = this.fb.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -48,6 +38,17 @@ ngOnInit(): void {
     city: ['', Validators.required],
     paymentMethod: ['cash', Validators.required],
   });
+
+  this.cartSub = this.ecommerceService.cart$.subscribe(items => {
+    this.cartItems = items;
+  });
+
+  const items = this.ecommerceService.getCartItemsSnapshot();
+console.log('Checkout Items:', items);
+  if (items.length === 0) {
+    this.router.navigate(['/ecommerce/storefront']);
+    return;
+  }
 }
 
   ngOnDestroy(): void {
