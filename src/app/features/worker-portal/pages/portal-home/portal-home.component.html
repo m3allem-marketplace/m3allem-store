@@ -1,0 +1,144 @@
+<div class="dashboard-container" dir="rtl">
+
+  <div class="loading-state" *ngIf="isLoading">
+    <app-spinner></app-spinner>
+  </div>
+
+  <div class="dashboard-content" *ngIf="!isLoading">
+
+    <div class="column">
+      <div class="column-header">
+        <h2>الوظائف المتاحة</h2>
+        <span class="badge circle-badge count-blue">
+          {{ availableGigs.length }}
+        </span>
+      </div>
+
+      <div class="card-list" *ngIf="availableGigs.length > 0; else noGigs">
+
+        <div
+          class="job-card"
+          *ngFor="let gig of availableGigs; let i = index"
+          [style.animation-delay]="i * 0.1 + 's'">
+
+          <div class="card-header">
+            <h3>{{ gig.title }}</h3>
+          </div>
+
+          <div class="card-body">
+            <p class="info-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span>{{ gig.address }}</span>
+            </p>
+            <p class="info-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>{{ gig.scheduledDate | date:'mediumDate' }} • {{ gig.scheduledDate | date:'shortTime' }}</span>
+            </p>
+            
+            <div class="card-metrics">
+              <span class="duration-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                {{ gig.estimatedHours }} ساعات
+              </span>
+              <div class="price-tag">
+                {{ gig.payAmount | currency:'EGP':'symbol':'1.0-0' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn btn-outline-primary"
+              (click)="navigateToJobDetails(gig._id)">
+              عرض التفاصيل
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <ng-template #noGigs>
+        <div class="empty-state">
+          لا توجد وظائف متاحة حالياً
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <h2>عقودي النشطة</h2>
+        <span class="badge circle-badge count-amber">
+          {{ activeContracts.length }}
+        </span>
+      </div>
+
+      <div class="card-list" *ngIf="activeContracts.length > 0; else noContracts">
+
+        <div
+          class="job-card"
+          *ngFor="let contract of activeContracts; let i = index"
+          [style.animation-delay]="i * 0.1 + 's'">
+
+          <div class="card-header">
+            <h3>{{ contract.title }}</h3>
+            
+            <span
+              class="status-pill"
+              [ngClass]="{
+                'status-inprogress': contract.status.toLowerCase() === 'in progress' || contract.status.toLowerCase() === 'in-progress' || contract.status.toLowerCase() === 'inprogress',
+                'status-completed': contract.status.toLowerCase() === 'completed',
+                'status-cancelled': contract.status.toLowerCase() === 'cancelled'
+              }">
+              {{ 
+                contract.status.toLowerCase() === 'in progress' || contract.status.toLowerCase() === 'in-progress' || contract.status.toLowerCase() === 'inprogress' ? 'قيد التنفيذ' : 
+                contract.status.toLowerCase() === 'completed' ? 'مكتمل' : 
+                contract.status.toLowerCase() === 'cancelled' ? 'ملغي' : contract.status 
+              }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <p class="info-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span>{{ contract.address }}</span>
+            </p>
+            <p class="info-row">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="card-icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>{{ contract.scheduledDate | date:'mediumDate' }} • {{ contract.scheduledDate | date:'shortTime' }}</span>
+            </p>
+
+            <div class="card-metrics">
+              <span class="duration-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                {{ contract.estimatedHours }} ساعات
+              </span>
+              <div class="price-tag">
+                {{ contract.payAmount | currency:'EGP':'symbol':'1.0-0' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn btn-primary"
+              (click)="navigateToJobDetails(contract._id)">
+              عرض العقد
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <ng-template #noContracts>
+        <div class="empty-state">
+          لا توجد عقود نشطة حالياً
+        </div>
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>
