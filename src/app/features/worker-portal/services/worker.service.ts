@@ -97,16 +97,20 @@ export class WorkerService {
     return of(job);
   }
 
-  updateJobStatus(
-    jobId: string,
-    status: JobStatus
-  ): Observable<Job> {
-    const job = this.mockJobs.find(j => j._id === jobId)!;
+ updateJobStatus(
+  jobId: string,
+  status: JobStatus
+): Observable<Job> {
+  const job = this.mockJobs.find(j => j._id === jobId)!;
 
-    job.status = status;
+  job.status = status;
 
-    return of(job);
+  if (status === 'in-progress' && !job.workerId) {
+    job.workerId = 'w1';
   }
+
+  return of(job);
+}
 
   // API Phase 
   /*
