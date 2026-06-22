@@ -7,6 +7,7 @@ import { App } from './app';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { provideHttpClient } from '@angular/common/http';
+import { SupplierDashboardModule } from './features/supplier-dashboard/supplier-dashboard.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { provideHttpClient } from '@angular/common/http';
     AppRoutingModule,
     CoreModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SupplierDashboardModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
