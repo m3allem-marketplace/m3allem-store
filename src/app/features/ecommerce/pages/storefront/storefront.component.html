@@ -62,12 +62,33 @@
   </section>
 
   <!-- ═══════════════════ SPINNER ═══════════════════ -->
+   
   <div class="spinner-container" *ngIf="isLoading">
     <app-spinner size="lg" color="#3b82f6"></app-spinner>
     <p class="loading-text">جاري تحميل المنتجات...</p>
   </div>
 
-  <div *ngIf="!isLoading">
+  <!-- ═══════════════════ ERROR STATE ═══════════════════ -->
+  <div class="error-state" *ngIf="!isLoading && hasError">
+    <div class="error-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="error-svg">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    </div>
+    <h3 class="error-title">تعذّر تحميل المنتجات</h3>
+    <p class="error-text">تأكد من اتصالك بالإنترنت أو حاول مرة أخرى</p>
+    <button class="retry-btn" (click)="loadProducts()" id="retry-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+        <polyline points="23 4 23 10 17 10"/>
+        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+      </svg>
+      إعادة المحاولة
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && !hasError">
 
     <!-- ═══════════════════ FEATURED PRODUCTS ═══════════════════ -->
     <section class="featured-section" *ngIf="featuredProducts.length > 0">

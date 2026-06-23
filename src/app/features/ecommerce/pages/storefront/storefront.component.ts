@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, timeout, catchError, finalize } from 'rxjs/operators';
 import { EcommerceService } from '../../services/ecommerce.service';
 import { Item } from '../../../../shared/models/item.model';
 
@@ -26,6 +26,7 @@ export class StorefrontComponent implements OnInit {
   filteredProducts: Item[] = [];
   featuredProducts: Item[] = [];
   isLoading  = false;
+  hasError   = false;
   isCartOpen = false;
 
   searchControl    = new FormControl('');
@@ -83,7 +84,7 @@ export class StorefrontComponent implements OnInit {
     },
   ];
 
-  // ── تحويل التصنيف العربي إلى المفتاح الإنجليزي في السيرفر ───────────────────────────
+
   private categoryMapping: { [key: string]: string } = {
     'الكل':     'All',
     'سباكة':    'Plumbing',
@@ -99,7 +100,8 @@ export class StorefrontComponent implements OnInit {
 
   constructor(
     private ecommerceService: EcommerceService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.cartCount$ = this.ecommerceService.cartCount$;
   }
@@ -114,19 +116,27 @@ export class StorefrontComponent implements OnInit {
 
   loadProducts(): void {
     this.isLoading = true;
-    this.ecommerceService.getProducts().subscribe({
+    this.hasError  = false;
+    this.ecommerceService.getProducts().pipe(
+      timeout(15000),
+      catchError(err => {
+        this.hasError = true;
+        return of([] as Item[]);
+      }),
+      finalize(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      })
+    ).subscribe({
       next: products => {
-        this.allProducts     = products;
-        this.featuredProducts = [...products]
-          .filter(p => p.stockQuantity > 0)
-          .sort((a, b) => b.stockQuantity - a.stockQuantity)
+        const safeProducts = Array.isArray(products) ? products : [];
+        this.allProducts     = safeProducts;
+        this.featuredProducts = [...safeProducts]
+          .filter(p => p && p.stockQuantity > 0)
+          .sort((a, b) => (b.stockQuantity || 0) - (a.stockQuantity || 0))
           .slice(0, 4);
         this.applyFilters();
-        this.isLoading = false;
-      },
-      error: err => {
-        console.error(err);
-        this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
