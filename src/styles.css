@@ -1,1 +1,104 @@
-/* You can add global styles to this file, and also import other style files */
+/* ════════════════════════════════════════════
+   ملف التنسيقات العامة - الوضع الفاتح (Light Mode)
+   ════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap');
+
+:root {
+  --font-main: 'Cairo', sans-serif;
+
+  /* ألوان الوضع الفاتح الأساسية */
+  --bg-page:  #f3f7f8; 
+  --bg-dark:  #f8fafc;
+  --bg-card:  #ffffff; 
+  --bg-input: #f1f5f9;
+
+  /* ألوان النصوص للوضع الفاتح */
+  --text-heading: #0f172a;
+  --text-body:    #334155;
+  --text-muted:   #64748b;
+  --text-light:   #94a3b8;
+  --text-white:   #ffffff;
+
+  /* درجات الألوان المخصصة */
+  --blue-50:  #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-200: #bfdbfe;
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --blue-900: #1e3a8a;
+
+  --gold-100: #fef9c3;
+  --gold-300: #fcd34d;
+  --gold-400: #fbbf24;
+  --gold-500: #f59e0b;
+  --gold-main: #dfba6b;
+  --gold-dark: #b99343;
+
+  --green-100: rgba(34, 197, 94, 0.1);
+  --green-500: #22c55e;
+  --green-700: #15803d;
+
+  --red-100: rgba(239, 68, 68, 0.1);
+  --red-500: #ef4444;
+  --red-700: #b91c1c;
+
+  --amber-100: rgba(245, 158, 11, 0.1);
+  --amber-500: #f59e0b;
+  --amber-700: #b45309;
+
+  --slate-50:  #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  /* الحدود والظلال الفاتحة */
+  --border-light:  rgba(0, 0, 0, 0.08);
+  --border-blue:   rgba(59, 130, 246, 0.3);
+  --border-focus:  #3b82f6;
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+  /* حواف دائرية */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
+  --radius-pill: 999px;
+
+  /* سرعة الحركات */
+  --transition-fast:   0.2s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.4s ease;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  background: var(--bg-page);
+  font-family: var(--font-main);
+  color: var(--text-body);
+}
+
+input, button, select, textarea {
+  font-family: inherit;
+}

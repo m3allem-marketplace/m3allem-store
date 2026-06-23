@@ -1,0 +1,147 @@
+<!-- Toast Notification -->
+<div class="toast" [class.toast-visible]="showToast" role="alert" aria-live="polite">
+  <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+  <span>تمت الإضافة إلى السلة بنجاح!</span>
+</div>
+
+<!-- Full-page wrapper -->
+<div class="page-wrapper">
+  <div class="detail-container">
+
+    <!-- Back Link -->
+    <button class="back-btn" (click)="goBack()" id="back-to-store-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      العودة إلى المتجر
+    </button>
+
+    <!-- Spinner -->
+    <div class="spinner-wrapper" *ngIf="isLoading">
+      <app-spinner size="lg" color="#fbbf24"></app-spinner>
+      <p class="loading-text">جاري تحميل المنتج...</p>
+    </div>
+
+    <!-- Error Banner -->
+    <div class="error-banner" *ngIf="hasError && !isLoading">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div>
+        <p class="error-title">تعذّر تحميل المنتج</p>
+        <p class="error-sub">تحقق من الرابط أو عُد إلى المتجر وحاول مرة أخرى.</p>
+      </div>
+    </div>
+
+    <!-- Product Layout -->
+    <div class="product-layout" *ngIf="product && !isLoading">
+
+      <!-- Left col (in RTL = right side visually): Image -->
+      <div class="image-col">
+        <div class="image-card">
+          <img
+            *ngIf="product.imageUrl"
+            [src]="product.imageUrl"
+            [alt]="product.title"
+            class="product-img"
+          >
+          <div *ngIf="!product.imageUrl" class="img-placeholder">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+              <polygon points="50,5 90,28 90,72 50,95 10,72 10,28" fill="#1B2B6E" stroke="url(#detailGrad)" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M30 68V32L50 51L70 32V68" stroke="url(#detailGrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="detailGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#DFBA6B"/>
+                  <stop offset="100%" stop-color="#B99343"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="placeholder-label">لا توجد صورة للمنتج</span>
+          </div>
+        </div>
+
+        <!-- Supplier Badge -->
+        <div class="supplier-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <div>
+            <p class="supplier-label">المورد</p>
+            <p class="supplier-value">مورد موثّق ✓</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right col (in RTL = left side visually): Details Panel -->
+      <div class="details-panel">
+
+        <!-- Category -->
+        <span class="category-badge">{{ getCategoryArabic(product.category) }}</span>
+
+        <!-- Title -->
+        <h1 class="product-title">{{ product.title }}</h1>
+
+        <!-- Price -->
+        <div class="price-row">
+          <span class="price-label">السعر</span>
+          <span class="price-value">{{ formatPrice(product.price) }} ج.م</span>
+        </div>
+
+        <!-- Stock Badge -->
+        <span class="stock-badge" [ngClass]="getStockBadgeClass(product.stockQuantity)">
+          {{ getStockBadgeText(product.stockQuantity) }}
+        </span>
+
+        <hr class="divider">
+
+        <!-- Description -->
+        <div class="section">
+          <p class="section-label">وصف المنتج</p>
+          <p class="description-text">{{ product.description }}</p>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Quantity Selector -->
+        <div class="section" *ngIf="product.stockQuantity > 0">
+          <p class="section-label">الكمية</p>
+          <div class="qty-selector">
+            <button
+              class="qty-btn"
+              (click)="decrement()"
+              [disabled]="quantity <= 1"
+              id="qty-decrement-btn"
+              aria-label="تقليل الكمية"
+            >−</button>
+            <span class="qty-display" id="qty-display">{{ quantity }}</span>
+            <button
+              class="qty-btn"
+              (click)="increment()"
+              [disabled]="quantity >= product.stockQuantity"
+              id="qty-increment-btn"
+              aria-label="زيادة الكمية"
+            >+</button>
+            <span class="qty-max">من أصل {{ product.stockQuantity }}</span>
+          </div>
+        </div>
+
+        <!-- Add to Cart -->
+        <app-button
+          [label]="product.stockQuantity === 0 ? 'نفد من المخزن' : 'أضف إلى السلة'"
+          [disabled]="product.stockQuantity === 0"
+          variant="primary"
+          id="add-to-cart-detail-btn"
+          (clicked)="addToCart()"
+        ></app-button>
+
+      </div>
+    </div>
+
+  </div>
+</div>

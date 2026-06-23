@@ -1,0 +1,196 @@
+<div class="details-container" dir="rtl">
+  
+  <div class="back-navigation">
+    <button class="btn-back" (click)="backToDashboard()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>العودة إلى لوحة التحكم</span>
+    </button>
+  </div>
+
+  <div class="center-state" *ngIf="isLoading">
+    <app-spinner></app-spinner>
+  </div>
+
+  <div class="error-banner" *ngIf="errorMessage">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div class="details-content" *ngIf="!isLoading && job">
+    
+    <header class="job-header">
+      <div class="header-main-info">
+        <h1>{{ job.title }}</h1>
+        <div class="price-tag">
+          {{ job.payAmount | currency:'EGP':'symbol':'1.0-0' }}
+        </div>
+        <div class="date-info">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-muted"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>{{ job.scheduledDate | date:'longDate' }} • {{ job.scheduledDate | date:'shortTime' }}</span>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <span class="status-badge" [ngClass]="{
+          'status-available': job.status.toLowerCase() === 'available',
+          'status-inprogress': job.status.toLowerCase() === 'in progress' || job.status.toLowerCase() === 'in-progress' || job.status.toLowerCase() === 'inprogress',
+          'status-completed': job.status.toLowerCase() === 'completed'
+        }">
+          {{ 
+            job.status.toLowerCase() === 'available' ? 'متاح للعمل' :
+            (job.status.toLowerCase() === 'in progress' || job.status.toLowerCase() === 'in-progress' || job.status.toLowerCase() === 'inprogress') ? 'قيد التنفيذ' :
+            job.status.toLowerCase() === 'completed' ? 'مكتمل' : job.status
+          }}
+        </span>
+      </div>
+    </header>
+
+    <div class="cards-grid">
+      
+      <div class="grid-column">
+        
+        <div class="info-card">
+          <h2 class="card-title">معلومات العميل</h2>
+          <div class="client-profile">
+            <div class="client-avatar">
+              {{ job.clientName ? job.clientName.charAt(0).toUpperCase() : 'ع' }}
+            </div>
+            <div class="client-meta">
+              <span class="client-name">{{ job.clientName || 'عميل متجر معلم' }}</span>
+            </div>
+          </div>
+          <div class="card-links-list">
+            <a [href]="'tel:' + job.clientPhone" class="info-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="link-icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span>{{ job.clientPhone }}</span>
+            </a>
+            <a [href]="'https://maps.google.com/?q=' + job.address" target="_blank" class="info-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="link-icon"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span class="address-text">{{ job.address }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-external"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h2 class="card-title">وصف العمل</h2>
+          <p class="description-text">{{ job.description }}</p>
+        </div>
+
+      </div>
+
+      <div class="grid-column">
+        
+  <div class="info-card">
+  <h2 class="card-title">قائمة المهام المطلوبة</h2>
+  <span class="card-subtitle">
+    (يرجى تحديد المهام المكتملة بصرياً)
+  </span>
+
+  <ul class="checklist-group">
+    <li
+      class="checklist-item"
+      *ngFor="let task of job.checklist; let idx = index"
+      (click)="toggleTask(idx)">
+
+      <div
+        class="custom-checkbox"
+        [class.checked]="task.completed">
+
+        <svg
+          *ngIf="task.completed"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+
+      <span
+        class="task-text"
+        [class.strikethrough]="task.completed">
+
+        {{ task.task }}
+
+      </span>
+    </li>
+  </ul>
+</div>
+
+<div class="info-card">
+  <h2 class="card-title">تفاصيل الوقت والدفع</h2>
+
+  <div class="metrics-list">
+    <div class="metric-row">
+      <div class="metric-label">
+        <span>الوقت المتوقع لإنجاز العمل:</span>
+      </div>
+
+      <div class="metric-value font-bold">
+        {{ job.estimatedHours }} ساعات
+      </div>
+    </div>
+
+    <div class="metric-row highlight-row">
+      <div class="metric-label">
+        <span>إجمالي المبلغ المستحق:</span>
+      </div>
+
+      <div class="metric-value price-highlight">
+        {{ job.payAmount | currency:'EGP':'symbol':'1.0-0' }}
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+
+    </div>
+
+    <footer class="action-footer">
+      
+      <ng-container [ngSwitch]="job.status.toLowerCase()">
+        
+        <button *ngSwitchCase="'available'" class="btn-action btn-brand-primary" [disabled]="isUpdating" (click)="onActionClick()">
+          <span *ngIf="!isUpdating">قبول وبدء العمل الفوري</span>
+          <app-spinner *ngIf="isUpdating" class="btn-spinner"></app-spinner>
+        </button>
+
+        <button *ngSwitchCase="(job.status.toLowerCase() === 'in progress' || job.status.toLowerCase() === 'in-progress' || job.status.toLowerCase() === 'inprogress' ? job.status.toLowerCase() : '')" 
+                class="btn-action btn-success-green" [disabled]="isUpdating" (click)="onActionClick()">
+          <span *ngIf="!isUpdating">تأكيد اكتمال العمل وتسليم المهمة</span>
+          <app-spinner *ngIf="isUpdating" class="btn-spinner"></app-spinner>
+        </button>
+
+        <div *ngSwitchCase="'completed'" class="completed-banner-alert">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span>تم اكتمال العمل وتأكيده بنجاح. هذا العقد مغلق حالياً بصيغة القراءة فقط.</span>
+        </div>
+
+      </ng-container>
+
+    </footer>
+
+  </div>
+  <div class="popup-overlay" *ngIf="showConfirmPopup" (click)="closePopup()">
+    <div class="popup-content" (click)="$event.stopPropagation()"> <div class="popup-icon-container">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="popup-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      
+      <h3 class="popup-title">تأكيد اكتمال العمل</h3>
+      <p class="popup-message">هل أنت متأكد من رغبتك في إنهاء هذه المهمة وتسليمها؟ لا يمكن التراجع عن هذه الخطوة بعد التأكيد.</p>
+      
+      <div class="popup-actions">
+        <button class="btn btn-secondary-outline" (click)="closePopup()">إلغاء الرجوع</button>
+        <button class="btn btn-success-green" (click)="confirmCompletion()">نعم، تأكيد الاكتمال</button>
+      </div>
+
+    </div>
+  </div>
+</div>

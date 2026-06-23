@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://m3allem-store-dashboard.vercel.app",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

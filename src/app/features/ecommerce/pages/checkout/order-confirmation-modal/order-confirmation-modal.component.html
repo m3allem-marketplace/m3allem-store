@@ -1,0 +1,77 @@
+<!-- Backdrop -->
+
+<div class="modal-backdrop" (click)="close()"></div>
+
+<!-- Modal -->
+
+<div class="modal" role="dialog" aria-modal="true">
+
+  <div class="modal-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  </div>
+
+  <h2 class="modal-title">تم تأكيد طلبك! 🎉</h2>
+  <p class="modal-sub">سيتم التواصل معك قريباً لتأكيد موعد التوصيل</p>
+
+  <div class="modal-info-grid">
+    <div class="modal-info-item">
+      <p class="modal-info-label">رقم الطلب</p>
+      <p class="modal-info-value">#{{ receipt.orderId }}</p>
+    </div>
+
+```
+<div class="modal-info-item">
+  <p class="modal-info-label">الحالة</p>
+  <p class="modal-info-value modal-info-value--status">
+    {{ receipt.status === 'confirmed' ? 'مؤكد ✓' : 'قيد المراجعة' }}
+  </p>
+</div>
+
+<div class="modal-info-item">
+  <p class="modal-info-label">موعد التوصيل المتوقع</p>
+  <p class="modal-info-value">{{ receipt.estimatedDelivery }}</p>
+</div>
+
+<div class="modal-info-item">
+  <p class="modal-info-label">الإجمالي المدفوع</p>
+  <p class="modal-info-value modal-info-value--total">
+    {{ grandTotal }} ج.م
+  </p>
+</div>
+  </div>
+
+  <hr class="modal-divider"/>
+
+  <div class="modal-items">
+    <p class="modal-items-label">المنتجات المطلوبة</p>
+
+<div class="modal-item" *ngFor="let ci of cartItems">
+  <div class="modal-item__thumb">
+    <img *ngIf="ci.item.imageUrl" [src]="ci.item.imageUrl" [alt]="ci.item.title"/>
+
+    <div *ngIf="!ci.item.imageUrl" class="modal-item__placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="modal-item__info">
+    <p class="modal-item__title">{{ ci.item.title }}</p>
+    <p class="modal-item__qty">× {{ ci.quantity }}</p>
+  </div>
+
+  <p class="modal-item__price">
+    {{ ci.item.price * ci.quantity }} ج.م
+  </p>
+</div>
+
+  </div>
+
+<button class="modal-cta" (click)="close()"> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"> <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/> <polyline points="9 22 9 12 15 12 15 22"/> </svg>
+العودة للصفحة الرئيسية </button>
+
+</div>
