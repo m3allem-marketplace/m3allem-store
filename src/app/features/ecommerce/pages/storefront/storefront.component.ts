@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, timeout, catchError, finalize } from 'rxjs/operators';
-import { EcommerceService } from '../../services/ecommerce.service';
+import { EcommerceService, CategoryShops, ShopWithProducts } from '../../services/ecommerce.service';
 import { Item } from '../../../../shared/models/item.model';
 
 export interface CategoryCard {
@@ -25,9 +25,13 @@ export class StorefrontComponent implements OnInit {
   allProducts: Item[]      = [];
   filteredProducts: Item[] = [];
   featuredProducts: Item[] = [];
+  categoryShops: CategoryShops[] = [];
+  filteredCategoryShops: CategoryShops[] = [];
+  expandedShops: Set<string> = new Set();
   isLoading  = false;
   hasError   = false;
   isCartOpen = false;
+  mobileMenuOpen = false;
 
   searchControl    = new FormControl('');
   selectedCategory = 'الكل';
@@ -101,6 +105,7 @@ export class StorefrontComponent implements OnInit {
   constructor(
     private ecommerceService: EcommerceService,
     private router: Router,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {
     this.cartCount$ = this.ecommerceService.cartCount$;
@@ -108,6 +113,17 @@ export class StorefrontComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        this.selectedCategory = params['category'];
+      }
+      if (params['search']) {
+        this.searchControl.setValue(params['search'], { emitEvent: false });
+      }
+      this.applyFilters();
+    });
+
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -139,6 +155,18 @@ export class StorefrontComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+
+    // Load shops grouped by category
+    this.ecommerceService.getShopsByCategory().pipe(
+      timeout(15000),
+      catchError(() => of([] as CategoryShops[]))
+    ).subscribe({
+      next: shops => {
+        this.categoryShops = shops;
+        this.filterShops();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   selectCategory(category: string): void {
@@ -165,6 +193,31 @@ export class StorefrontComponent implements OnInit {
 
       return matchesSearch && matchesCategory;
     });
+
+    this.filterShops();
+  }
+
+  filterShops(): void {
+    const activeCategoryEnglish = this.categoryMapping[this.selectedCategory] || 'All';
+    if (activeCategoryEnglish === 'All') {
+      this.filteredCategoryShops = this.categoryShops;
+    } else {
+      this.filteredCategoryShops = this.categoryShops.filter(
+        cs => cs.categoryEnglish === activeCategoryEnglish
+      );
+    }
+  }
+
+  toggleShop(shopId: string): void {
+    if (this.expandedShops.has(shopId)) {
+      this.expandedShops.delete(shopId);
+    } else {
+      this.expandedShops.add(shopId);
+    }
+  }
+
+  isShopExpanded(shopId: string): boolean {
+    return this.expandedShops.has(shopId);
   }
 
   addToCart(event: Event, item: Item): void {

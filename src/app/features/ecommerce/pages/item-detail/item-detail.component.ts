@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EcommerceService } from '../../services/ecommerce.service';
 import { Item } from '../../../../shared/models/item.model';
+import { timeout, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-item-detail',
@@ -15,6 +18,10 @@ export class ItemDetailComponent implements OnInit, OnDestroy {
   hasError = false;
   quantity = 1;
   showToast = false;
+  isCartOpen = false;
+
+  selectedCategory = 'الكل';
+  searchControl = new FormControl('');
 
   private toastTimer: any = null;
 
@@ -49,18 +56,32 @@ export class ItemDetailComponent implements OnInit, OnDestroy {
     this.hasError = false;
 
     try {
-      this.ecommerceService.getProductById(id).subscribe({
+      this.ecommerceService.getProductById(id).pipe(
+        timeout(15000),
+        catchError(err => {
+          console.error('Error loading product detail:', err);
+          this.hasError = true;
+          this.isLoading = false;
+          return of(null);
+        })
+      ).subscribe({
         next: (product) => {
-          this.product = product;
-          this.quantity = 1;
+          if (product) {
+            this.product = product;
+            this.quantity = 1;
+          } else {
+            this.hasError = true;
+          }
           this.isLoading = false;
         },
-        error: (_err) => {
+        error: (err) => {
+          console.error('Subscription error loading product detail:', err);
           this.hasError = true;
           this.isLoading = false;
         }
       });
-    } catch (_e) {
+    } catch (e) {
+      console.error('Sync error in loadProduct:', e);
       this.hasError = true;
       this.isLoading = false;
     }
@@ -117,5 +138,13 @@ export class ItemDetailComponent implements OnInit, OnDestroy {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  }
+
+  openCart(): void {
+    this.isCartOpen = true;
+  }
+
+  closeCart(): void {
+    this.isCartOpen = false;
   }
 }
