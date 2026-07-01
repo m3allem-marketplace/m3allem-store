@@ -20,17 +20,20 @@ import { Observable } from 'rxjs';
 export class JwtInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Read token directly from localStorage as required
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      req = req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+    // Only attach the token for the /api/orders endpoint
+    if (req.url.includes('/api/orders')) {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        req = req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
     }
 
+    // Public APIs (and any request missing a token) pass through unchanged
     return next.handle(req);
   }
 }
