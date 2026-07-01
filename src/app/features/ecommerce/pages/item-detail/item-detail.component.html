@@ -8,6 +8,12 @@
 
 <!-- Full-page wrapper -->
 <div class="page-wrapper">
+  <app-header 
+    [selectedCategory]="selectedCategory" 
+    [searchControl]="searchControl"
+    (cartOpened)="openCart()">
+  </app-header>
+
   <div class="detail-container">
 
     <!-- Back Link -->
@@ -81,8 +87,13 @@
       <!-- Right col (in RTL = left side visually): Details Panel -->
       <div class="details-panel">
 
-        <!-- Category -->
-        <span class="category-badge">{{ getCategoryArabic(product.category) }}</span>
+        <!-- Meta Row for Badges -->
+        <div class="meta-row">
+          <span class="category-badge">{{ getCategoryArabic(product.category) }}</span>
+          <span class="stock-badge" [ngClass]="getStockBadgeClass(product.stockQuantity)">
+            {{ getStockBadgeText(product.stockQuantity) }}
+          </span>
+        </div>
 
         <!-- Title -->
         <h1 class="product-title">{{ product.title }}</h1>
@@ -93,55 +104,68 @@
           <span class="price-value">{{ formatPrice(product.price) }} ج.م</span>
         </div>
 
-        <!-- Stock Badge -->
-        <span class="stock-badge" [ngClass]="getStockBadgeClass(product.stockQuantity)">
-          {{ getStockBadgeText(product.stockQuantity) }}
-        </span>
-
         <hr class="divider">
 
         <!-- Description -->
-        <div class="section">
+        <div class="section description-section">
           <p class="section-label">وصف المنتج</p>
           <p class="description-text">{{ product.description }}</p>
         </div>
 
         <hr class="divider">
 
-        <!-- Quantity Selector -->
-        <div class="section" *ngIf="product.stockQuantity > 0">
-          <p class="section-label">الكمية</p>
-          <div class="qty-selector">
-            <button
-              class="qty-btn"
-              (click)="decrement()"
-              [disabled]="quantity <= 1"
-              id="qty-decrement-btn"
-              aria-label="تقليل الكمية"
-            >−</button>
-            <span class="qty-display" id="qty-display">{{ quantity }}</span>
-            <button
-              class="qty-btn"
-              (click)="increment()"
-              [disabled]="quantity >= product.stockQuantity"
-              id="qty-increment-btn"
-              aria-label="زيادة الكمية"
-            >+</button>
+        <!-- Inline Purchase Action Row -->
+        <div class="purchase-action-row" *ngIf="product.stockQuantity > 0">
+          <div class="qty-section-inline">
+            <span class="qty-label-inline">الكمية:</span>
+            <div class="qty-selector">
+              <button
+                class="qty-btn"
+                (click)="decrement()"
+                [disabled]="quantity <= 1"
+                id="qty-decrement-btn"
+                aria-label="تقليل الكمية"
+              >−</button>
+              <span class="qty-display" id="qty-display">{{ quantity }}</span>
+              <button
+                class="qty-btn"
+                (click)="increment()"
+                [disabled]="quantity >= product.stockQuantity"
+                id="qty-increment-btn"
+                aria-label="زيادة الكمية"
+              >+</button>
+            </div>
             <span class="qty-max">من أصل {{ product.stockQuantity }}</span>
           </div>
+
+          <app-button
+            [label]="'أضف إلى السلة'"
+            variant="primary"
+            id="add-to-cart-detail-btn"
+            (clicked)="addToCart()"
+            class="inline-add-btn"
+          ></app-button>
         </div>
 
-        <!-- Add to Cart -->
-        <app-button
-          [label]="product.stockQuantity === 0 ? 'نفد من المخزن' : 'أضف إلى السلة'"
-          [disabled]="product.stockQuantity === 0"
-          variant="primary"
-          id="add-to-cart-detail-btn"
-          (clicked)="addToCart()"
-        ></app-button>
+        <div class="purchase-action-row out-of-stock" *ngIf="product.stockQuantity === 0">
+          <app-button
+            [label]="'نفد من المخزن'"
+            [disabled]="true"
+            variant="primary"
+            id="add-to-cart-detail-btn"
+            class="inline-add-btn"
+          ></app-button>
+        </div>
 
       </div>
     </div>
 
   </div>
+
+  <!-- Cart Drawer -->
+  <app-cart-drawer
+    [isOpen]="isCartOpen"
+    (closed)="closeCart()"
+    (checkoutClicked)="goToCheckout()"
+  ></app-cart-drawer>
 </div>
