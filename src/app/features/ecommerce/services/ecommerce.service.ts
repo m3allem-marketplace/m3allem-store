@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, forkJoin, of, throwError } from 'rxjs';
+import { map, shareReplay, catchError } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Item, ShopInfo } from '../../../shared/models/item.model';
 import { ApiService } from '../../../core/services/api.service';
 
@@ -26,17 +27,35 @@ export interface CartItem {
   quantity: number;
 }
 
+/**
+ * Matches the exact JSON body accepted by POST /api/orders
+ */
+export interface OrderApiPayload {
+  customerName: string;  // shopper's full name
+  productId:    string;  // product _id
+  quantity:     number;
+  location:     string;  // human-readable address / city
+  latitude:     number;  // WGS-84 latitude  (0 if not available)
+  longitude:    number;  // WGS-84 longitude (0 if not available)
+}
+
+/**
+ * Internal payload built by CheckoutComponent and consumed by placeOrder()
+ */
 export interface OrderPayload {
-  items: CartItem[];
-  shippingAddress: string;
-  paymentMethod: string;
+  items:            CartItem[];
+  customerName:     string;
+  location:         string;
+  latitude:         number;
+  longitude:        number;
+  paymentMethod:    string;
 }
 
 export interface OrderReceipt {
-  orderId: string;
-  totalAmount: number;
+  orderId:           string;
+  totalAmount:       number;
   estimatedDelivery: string;
-  status: 'confirmed' | 'pending';
+  status:            'confirmed' | 'pending';
 }
 
 // ─── Service ──────────────────────────────────────────────────────────────────
@@ -239,23 +258,31 @@ export class EcommerceService {
   // ── Checkout ─────────────────────────────────────────────────────────────────
 
   /**
-   * API بتاخد منتج واحد في كل request
-   * فبنبعت request لكل item في الكارت وبنستنى كلهم مع forkJoin
-   * وبعدين بنرجع receipt من أول order
+   * Sends one POST /orders request per cart item using the exact API payload:
+   *   { customerName, productId, quantity, location, latitude, longitude }
+   *
+   * Uses forkJoin so that all requests are fired in parallel and we wait for
+   * all of them to complete before emitting. Returns the first receipt.
    */
   placeOrder(orderPayload: OrderPayload): Observable<OrderReceipt> {
-    const { items, shippingAddress } = orderPayload;
+    const { items, customerName, location, latitude, longitude } = orderPayload;
 
-    const requests = items.map(ci =>
-      this.api.post<OrderReceipt>('/orders', {
-        customerName: shippingAddress,
-        productId:    ci.item._id,
-        quantity:     ci.quantity,
-      })
-    );
+    const requests = items.map(ci => {
+      const body: OrderApiPayload = {
+        customerName,
+        productId: ci.item._id,
+        quantity:  ci.quantity,
+        location,
+        latitude,
+        longitude,
+      };
+      return this.api.post<OrderReceipt>('/orders', body);
+    });
 
     return forkJoin(requests).pipe(
-      map(receipts => receipts[0]) // نرجع الـ receipt الأول
+      map(receipts => receipts[0]),  // return receipt of first item
+      // Explicitly re-throw so errors always reach the component's error callback
+      catchError(err => throwError(() => err))
     );
   }
 }

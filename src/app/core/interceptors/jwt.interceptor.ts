@@ -6,14 +6,22 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from '../services/auth.service';
 
+/**
+ * JwtInterceptor
+ *
+ * Reads the Bearer token directly from localStorage under the key 'token'
+ * and attaches it as an Authorization header to every outgoing HTTP request.
+ *
+ * Registration: already provided via HTTP_INTERCEPTORS in CoreModule.
+ * Do NOT add it again in AppModule to avoid duplicate requests.
+ */
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.authService.getToken();
+    // Read token directly from localStorage as required
+    const token = localStorage.getItem('token');
 
     if (token) {
       req = req.clone({

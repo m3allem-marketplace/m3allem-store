@@ -63,20 +63,28 @@
   .co-layout { grid-template-columns: 1fr; padding: 1.5rem 1rem 4rem; }
 }
 
-/* ── Error Banner ────────────────────────────────────────────────────────────── */
+/* ── Error Banner — matches project-wide design system ───────────────────────── */
 .error-banner {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  background: var(--red-100);
-  border: 1px solid #fca5a5;
-  border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
+  color: #991B1B;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.05);
 }
-.error-banner svg { width: 1.35rem; height: 1.35rem; color: var(--red-500); flex-shrink: 0; margin-top: .1rem; }
-.error-title { font-weight: 800; font-size: .95rem; color: var(--red-700); margin: 0 0 .2rem; }
-.error-sub   { font-size: .85rem; color: var(--text-muted); margin: 0; }
+
+.error-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
 
 /* ── Form Sections ───────────────────────────────────────────────────────────── */
 .form-section {
