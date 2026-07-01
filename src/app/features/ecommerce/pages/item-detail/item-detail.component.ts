@@ -147,4 +147,9 @@ export class ItemDetailComponent implements OnInit, OnDestroy {
   closeCart(): void {
     this.isCartOpen = false;
   }
+
+  goToCheckout(): void {
+    this.isCartOpen = false;
+    this.router.navigate(['/ecommerce/checkout']);
+  }
 }
