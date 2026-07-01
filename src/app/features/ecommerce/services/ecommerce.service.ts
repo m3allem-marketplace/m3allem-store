@@ -66,13 +66,46 @@ export class EcommerceService {
   private shopsCache$: Observable<CategoryShops[]> | null = null;
 
   // ── Cart State ───────────────────────────────────────────────────────────────
-  cartItems$ = new BehaviorSubject<CartItem[]>([]);
+  private readonly CART_STORAGE_KEY = 'm3allem_cart';
+  cartItems$ = new BehaviorSubject<CartItem[]>(this.getInitialCart());
   cart$      = this.cartItems$.asObservable();
   cartCount$ = this.cart$.pipe(
     map(items => items.reduce((sum, i) => sum + i.quantity, 0))
   );
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) {
+    // Persist cart state to localStorage whenever it changes
+    this.cartItems$.subscribe(items => {
+      try {
+        localStorage.setItem(this.CART_STORAGE_KEY, JSON.stringify(items));
+      } catch (e) {
+        console.error('Failed to save cart to localStorage', e);
+      }
+    });
+  }
+
+  private getInitialCart(): CartItem[] {
+    try {
+      const stored = localStorage.getItem(this.CART_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          // Basic runtime type check to ensure the parsed data looks like CartItem[]
+          const isValid = parsed.every(ci => 
+            ci && typeof ci === 'object' && ci.item && typeof ci.quantity === 'number'
+          );
+          if (isValid) {
+            return parsed as CartItem[];
+          } else {
+            console.warn('Cart data in localStorage is invalid, starting with empty cart.');
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse cart from localStorage', e);
+    }
+    return [];
+  }
 
   // ── Product Fetching ─────────────────────────────────────────────────────────
 
