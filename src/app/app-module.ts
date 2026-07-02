@@ -4,8 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import {
   provideHttpClient,
-  withInterceptorsFromDi,
-  HTTP_INTERCEPTORS
+  withInterceptorsFromDi
 } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,7 +15,7 @@ import { SharedModule } from './shared/shared.module';
 
 import { SupplierDashboardModule } from './features/supplier-dashboard/supplier-dashboard.module';
 
-import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+// JwtInterceptor is registered once in CoreModule — no duplicate needed here
 
 @NgModule({
   declarations: [
@@ -37,11 +36,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
       withInterceptorsFromDi()
     ),
 
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: JwtInterceptor,
-      multi: true
-    }
+    // JwtInterceptor is provided via CoreModule → no re-registration needed
   ],
   bootstrap: [App]
 })
