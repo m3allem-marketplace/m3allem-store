@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { OrderReceipt, CartItem } from '../../../services/ecommerce.service';
+import type { OrderReceipt, CartItem } from '../../../services/ecommerce.service';
 
 @Component({
   selector: 'app-order-confirmation-modal',

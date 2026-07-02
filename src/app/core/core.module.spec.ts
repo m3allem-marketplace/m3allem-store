@@ -3,22 +3,19 @@ import { CoreModule } from './core.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { AuthService } from './services/auth.service';
-import { vi, describe, it, expect } from 'vitest';
-
-// Mock AuthService since it is not yet implemented (TASK-E1-02)
-vi.mock('./services/auth.service', () => {
-  return {
-    AuthService: class {
-      getJwtToken() { return null; }
-    }
-  };
-});
+import { describe, it, expect } from 'vitest';
 
 describe('CoreModule', () => {
   it('should be created and register JwtInterceptor', () => {
+    const mockAuthService = {
+      getJwtToken: () => null
+    };
+
     TestBed.configureTestingModule({
       imports: [CoreModule],
-      providers: [AuthService]
+      providers: [
+        { provide: AuthService, useValue: mockAuthService }
+      ]
     });
 
     const interceptors = TestBed.inject(HTTP_INTERCEPTORS);

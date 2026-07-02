@@ -8,20 +8,20 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EcommerceService } from '../../services/ecommerce.service';
 import { ItemDetailComponent } from './item-detail.component';
 
-@Component({ selector: 'app-header', template: '' })
+@Component({ selector: 'app-header', template: '', standalone: false })
 class HeaderStubComponent {
   @Input() selectedCategory = 'الكل';
   @Input() searchControl: any = null;
 }
 
-@Component({ selector: 'app-cart-drawer', template: '' })
+@Component({ selector: 'app-cart-drawer', template: '', standalone: false })
 class CartDrawerStubComponent {
   @Input() isOpen = false;
   @Output() closed = new EventEmitter<void>();
   @Output() checkoutClicked = new EventEmitter<void>();
 }
 
-@Component({ selector: 'app-button', template: '' })
+@Component({ selector: 'app-button', template: '', standalone: false })
 class ButtonStubComponent {
   @Input() label = '';
   @Input() variant = 'primary';
@@ -29,7 +29,7 @@ class ButtonStubComponent {
   @Output() clicked = new EventEmitter<void>();
 }
 
-@Component({ selector: 'app-spinner', template: '' })
+@Component({ selector: 'app-spinner', template: '', standalone: false })
 class SpinnerStubComponent {
   @Input() size = 'md';
   @Input() color = '';

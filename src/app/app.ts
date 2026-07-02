@@ -8,6 +8,8 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError, Navigat
   styleUrl: './app.css'
 })
 export class App { 
+  title = () => 'm3allem-ecommerce';
+
   constructor(private router: Router) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
