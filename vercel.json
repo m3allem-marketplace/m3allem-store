@@ -1,15 +1,13 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/m3allem-ecommerce/browser",
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "outputDirectory": "dist/browser",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://m3allem-store-dashboard.vercel.app/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "https://m3allem-store-dashboard.vercel.app/api/$1"
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
