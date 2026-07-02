@@ -3,17 +3,14 @@
   "outputDirectory": "dist/m3allem-ecommerce/browser",
   "cleanUrls": true,
   "trailingSlash": false,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://m3allem-store-dashboard.vercel.app/api/$1"
+      "source": "/api/:path*",
+      "destination": "https://m3allem-store-dashboard.vercel.app/api/:path*"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/:path*",
+      "destination": "/index.html"
     }
   ]
 }
